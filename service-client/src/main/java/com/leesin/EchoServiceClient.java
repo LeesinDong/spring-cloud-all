@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
  * @date: Created in 2020/5/17 0017 18:03
  * @modified By:
  */
-
+//这里是provier的应用名称
 @FeignClient("service-provider")
 public interface EchoServiceClient {
 
