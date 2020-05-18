@@ -6,6 +6,8 @@
     <modules>
         <module>Eureka-server</module>
         <module>spring-config-client</module>
+        <module>service-provider</module>
+        <module>service-client</module>
     </modules>
     <parent>
         <groupId>org.springframework.boot</groupId>

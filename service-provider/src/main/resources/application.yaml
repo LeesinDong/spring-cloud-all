@@ -1,15 +1,16 @@
 spring:
   application:
-    name: config-client
+    name: service-provider
 
   autoconfigure:
     exclude: org.springframework.cloud.consul.serviceregistry.ConsulAutoServiceRegistrationAutoConfiguration
+
   # zookeeper 默认profile关闭自动注册
   cloud:
     zookeeper:
       enabled: false
 
-   # consule 默认profile自动关闭
+    # consule 默认profile自动关闭
     consul:
       discovery:
         enabled: false # Consul 服务发现与注册失效（默认）
@@ -44,7 +45,6 @@ spring:
   cloud:
     zookeeper:
       enabled: true
-
       connectString: 120.78.190.230:2181
 
 

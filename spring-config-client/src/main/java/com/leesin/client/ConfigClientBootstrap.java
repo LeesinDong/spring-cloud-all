@@ -29,7 +29,6 @@ public class ConfigClientBootstrap {
     public static void main(String[] args) {
         SpringApplication.run(ConfigClientBootstrap.class, args);
     }
-
     @Autowired
     private DiscoveryClient discoveryClient;
 

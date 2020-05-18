@@ -10,32 +10,34 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>spring-config-client</artifactId>
+    <artifactId>service-client</artifactId>
+    <description>服务客户端</description>
+    <dependencies>
+        <!-- Spring Cloud Open Feign 依赖 -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-openfeign</artifactId>
+        </dependency>
 
-<dependencies>
-
-    <dependency>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-web</artifactId>
-    </dependency>
-
-    <!-- Eureka 服务发现与注册客户端依赖 -->
-    <dependency>
-        <groupId>org.springframework.cloud</groupId>
-        <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
-    </dependency>
-
+        <!-- Eureka 服务发现与注册客户端依赖 -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+        </dependency>
         <!-- Zookeeper 服务发现与注册客户端依赖 -->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-zookeeper-discovery</artifactId>
         </dependency>
-<!--         Consul 服务发现与注册客户端依赖 -->
+        <!-- Consul 服务发现与注册客户端依赖 -->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-consul-discovery</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+    </dependencies>
 
-
-</dependencies>
 </project>

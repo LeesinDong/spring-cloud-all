@@ -1,15 +1,16 @@
 spring:
   application:
-    name: config-client
+    name: service-client
 
   autoconfigure:
-    exclude: org.springframework.cloud.consul.serviceregistry.ConsulAutoServiceRegistrationAutoConfiguration
+    exclude : org.springframework.cloud.consul.serviceregistry.ConsulAutoServiceRegistrationAutoConfiguration
+
   # zookeeper 默认profile关闭自动注册
   cloud:
     zookeeper:
       enabled: false
 
-   # consule 默认profile自动关闭
+    # consule 默认profile自动关闭
     consul:
       discovery:
         enabled: false # Consul 服务发现与注册失效（默认）
@@ -20,7 +21,7 @@ eureka:
     enabled: false
 
 server:
-  port: 8888 #随机端口  会随机找一个本地可用的端口
+  port: 8889 #随机端口  会随机找一个本地可用的端口
 
 --- # Profile For Eureka
 spring:
@@ -44,7 +45,6 @@ spring:
   cloud:
     zookeeper:
       enabled: true
-
       connectString: 120.78.190.230:2181
 
 
