@@ -12,8 +12,7 @@ spring:
 
     # consule 默认profile自动关闭
     consul:
-      discovery:
-        enabled: false # Consul 服务发现与注册失效（默认）
+      enabled: false # Consul 服务发现与注册失效（默认）
 
 # eureka 默认profile关闭自动注册
 eureka:
@@ -53,8 +52,8 @@ spring:
   profiles: consul
   cloud:
     consul:
-      discovery:
-        enable: true
+      enable: true
+
         ipAddress: 127.0.0.1
         port: 8500
 
