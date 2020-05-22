@@ -2,13 +2,34 @@ spring:
   application:
     name: service-client
 
+  kafka:
+    producer:
+      valueSerializer: com.leesin.kafka.ObjectSerialzable
+    #provider不需要group 但是consumer需要
+    consumer:
+      groupId: gupao-group
+      valueDeserializer: com.leesin.kafka.ObjectDeserializer
+
+  cloud:
+    stream:
+      bindings:
+        #channel
+        person-source:
+          distination: gupao
+        #channel
+        person-sink:
+          #topic
+          distination: gupao
+          #group
+          group: gupao-group
+
   autoconfigure:
     exclude : org.springframework.cloud.consul.serviceregistry.ConsulAutoServiceRegistrationAutoConfiguration
 
   # zookeeper 默认profile关闭自动注册
-  cloud:
-    zookeeper:
-      enabled: false
+#  cloud:
+#    zookeeper:
+#      enabled: false
 
     # consule 默认profile自动关闭
     consul:
@@ -53,7 +74,6 @@ spring:
   cloud:
     consul:
       enable: true
-
-        ipAddress: 127.0.0.1
-        port: 8500
+      ipAddress: 127.0.0.1
+      port: 8500
 

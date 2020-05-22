@@ -1,17 +1,23 @@
 package com.leesin;
 
+import com.leesin.client.Person;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
-import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.cloud.openfeign.EnableFeignClients;
+import org.springframework.cloud.stream.annotation.EnableBinding;
+import org.springframework.cloud.stream.annotation.StreamListener;
+import org.springframework.cloud.stream.messaging.Source;
 import org.springframework.context.annotation.Bean;
+import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.messaging.*;
+import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.RestTemplate;
 
 /**
  * @description:
@@ -23,30 +29,126 @@ import org.springframework.web.client.RestTemplate;
 @EnableAutoConfiguration
 @EnableDiscoveryClient
 @EnableFeignClients
+
+@EnableBinding({Source.class, PersonSource.class,PersonSink.class})
 public class EchoServiceClientBootstrap {
 
-    @Qualifier("echoServiceClient")
+
+    private final Source source;
+
+    private final PersonSource personSource;
+    private final PersonSink personSink;
+
+    // @Qualifier("echoServiceClient")
     @Autowired
     private final EchoServiceClient echoServiceClient;
 
-    @LoadBalanced
-    private final RestTemplate restTemplate;
+    // @LoadBalanced
+    // private final RestTemplate restTemplate;
 
-    public EchoServiceClientBootstrap(EchoServiceClient echoServiceClient, RestTemplate restTemplate) {
+    private KafkaTemplate<String, Object> kafkaTemplate;
+
+    public EchoServiceClientBootstrap(Source source, PersonSource personSource, com.leesin.PersonSink personSink, EchoServiceClient echoServiceClient,
+                                      // RestTemplate restTemplate,
+                                      KafkaTemplate<String, Object> kafkaTemplate) {
+        this.source = source;
+        this.personSource = personSource;
+        this.personSink = personSink;
         this.echoServiceClient = echoServiceClient;
-        this.restTemplate = restTemplate;
+        // this.restTemplate = restTemplate;
+        this.kafkaTemplate = kafkaTemplate;
     }
+
+
+    //    发送kafka消息
+    @GetMapping("/person")
+    public Person person(String name) {
+        Person person = createPerson(name);
+        kafkaTemplate.send("gupao", person);
+        return person;
+    }
+
+    @GetMapping("/stream/person")
+    public Person streamperson(String name) {
+        Person person = createPerson(name);
+        MessageChannel messageChannel = source.output();
+        messageChannel.send(MessageBuilder.withPayload(person).build());
+        return person;
+    }
+
+    @GetMapping("/stream/person/source")
+    public Person streampersonSource(String name) {
+        Person person = createPerson(name);
+        MessageChannel messageChannel = personSource.output();
+        MessageBuilder messageBuilder = MessageBuilder.withPayload(person).setHeader("Content-Type", "java/pojo");
+        messageChannel.send(messageBuilder.build());
+        return person;
+    }
+
+
+
+
+
+    public Person createPerson(String name) {
+        Person person = new Person();
+        person.setId(System.currentTimeMillis());
+        person.setName(name);
+        return person;
+    }
+
+
+    /*
+     * 读kafka消息
+     * */
+    @KafkaListener(topics = "gupao")
+    public void Listen(Person person) {
+        System.out.println(person);
+    }
+    //重要注意事项：
+    // 1 尽管springcloud strean binder中存在kafka的整合，然而，spring kafka和spring cloud stream kafka在
+    //处理数据生产和消费是存在差异，因此不要混用
+    //2 当spring cloud stream 发送消息办函头信息是，kafka deSerializer实现方法回调时不予以处理
+    //3 通常业务逻辑可以使用@Streamlistener来监听数据（主体、载体），如果需要更多头信息，需要subscriableChannel
+
+    /*
+    * 通过注解方式监听数据
+    * */
+    @StreamListener("person-source")  //指定channel名称
+    public void listenFromStream(Person person) {
+        System.out.println(person);
+    }
+
+
+    //通过spring message API的方式监听数据
+    //启动完之后会有这样的回调，记住就好了
+    @Bean
+    public ApplicationRunner runner() {
+        return args -> {
+            personSink.channel().subscribe(new MessageHandler() { //通过spring Message API实现的
+                @Override
+                //订阅一个数据
+                public void handleMessage(Message<?> message) throws MessagingException {
+                    MessageHeaders headers = message.getHeaders();
+                    String contentType = headers.get("Content-Type", String.class);
+                    Object object = message.getPayload();
+                    System.out.printf("说到消息[主体：%s ,消息头：%s \n]", object, headers);
+                }
+            });
+        };
+    }
+
 
     @GetMapping("/call/echo/{message}")
     public String echo(@PathVariable String message) {
         return echoServiceClient.echo(message);
     }
 
-    @LoadBalanced //负载均衡的策略
-    @Bean
-    public RestTemplate restTemplate() {
-        return new RestTemplate();
-    }
+
+    // @LoadBalanced //负载均衡的策略
+    // @Bean
+    // public RestTemplate restTemplate() {
+    //     return new RestTemplate();
+    // }
 
     public static void main(String[] args) {
         SpringApplication.run(EchoServiceClientBootstrap.class, args);
