@@ -37,7 +37,7 @@ public class ObjectSerialzable implements Serializer<Serializable> {
             e.printStackTrace();
         }
 
-        return new byte[0];
+        return dataArray;
     }
 
     @Override

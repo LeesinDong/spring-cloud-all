@@ -5,15 +5,23 @@ spring:
   autoconfigure:
     exclude: org.springframework.cloud.consul.serviceregistry.ConsulAutoServiceRegistrationAutoConfiguration
 
-  # zookeeper 默认profile关闭自动注册
+    # zookeeper 默认profile关闭自动注册
   cloud:
     zookeeper:
       enabled: false
 
+    gateway:
+      routes:
+      - id: rest
+        uri: http://127.0.0.1:8888/hello  # 被代理的uri
+        predicates:
+        - Path=/rest/hello
+        filters:
+        - StripPrefix=1
+
     # consule 默认profile自动关闭
     consul:
-      discovery:
-        enabled: false # Consul 服务发现与注册失效（默认）
+      enabled: false # Consul 服务发现与注册失效（默认）
 
 # eureka 默认profile关闭自动注册
 eureka:
@@ -53,8 +61,6 @@ spring:
   profiles: consul
   cloud:
     consul:
-      discovery:
-        enable: true
-        ipAddress: 127.0.0.1
-        port: 8500
-
+      enable: true
+      ipAddress: 127.0.0.1
+      port: 8500

@@ -109,7 +109,6 @@ public class EchoServiceClientBootstrap {
     //处理数据生产和消费是存在差异，因此不要混用
     //2 当spring cloud stream 发送消息办函头信息是，kafka deSerializer实现方法回调时不予以处理
     //3 通常业务逻辑可以使用@Streamlistener来监听数据（主体、载体），如果需要更多头信息，需要subscriableChannel
-
     /*
     * 通过注解方式监听数据
     * */

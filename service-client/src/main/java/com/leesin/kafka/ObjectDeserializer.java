@@ -29,7 +29,7 @@ public class ObjectDeserializer implements Deserializer<Serializable> {
             throw new RuntimeException(e);
         }
         System.out.printf("当前topic：%s，反序列化对象：%s\n",topic,String.valueOf(object));
-        return null;
+        return object;
     }
 
     @Override
