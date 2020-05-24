@@ -42,7 +42,7 @@ public class ServiceProviderBoostrap {
 
     @Bean
     public RouteLocator customeRouteLocator(RouteLocatorBuilder builder) {
-        builder.routes()
+       return builder.routes()
                 .route("world",
                         r -> r.path("/w").
                                 uri("http://127.0.0.1:8080/world"))

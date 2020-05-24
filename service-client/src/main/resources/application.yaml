@@ -11,6 +11,9 @@ spring:
       valueDeserializer: com.leesin.kafka.ObjectDeserializer
 
   cloud:
+    # zookeeper 默认profile关闭自动注册
+    zookeeper:
+      enabled: false
     stream:
       bindings:
         #channel
@@ -26,14 +29,12 @@ spring:
   autoconfigure:
     exclude : org.springframework.cloud.consul.serviceregistry.ConsulAutoServiceRegistrationAutoConfiguration
 
-  # zookeeper 默认profile关闭自动注册
-#  cloud:
-#    zookeeper:
-#      enabled: false
+
+
 
     # consule 默认profile自动关闭
-    consul:
-      enabled: false # Consul 服务发现与注册失效（默认）
+#    consul:
+#      enabled: false # Consul 服务发现与注册失效（默认）
 
 # eureka 默认profile关闭自动注册
 eureka:
@@ -69,11 +70,11 @@ spring:
 
 
 --- # Profile For consul
-spring:
-  profiles: consul
-  cloud:
-    consul:
-      enable: true
-      ipAddress: 127.0.0.1
-      port: 8500
+#spring:
+#  profiles: consul
+#  cloud:
+#    consul:
+#      enable: true
+#      ipAddress: 127.0.0.1
+#      port: 8500
 
