@@ -43,6 +43,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         manager.createUser(
 //                User.withDefaultPasswordEncoder() // 问题所在
                 User.builder().passwordEncoder(encoder()::encode) // 复用 PasswordEncoder Bean 加密算法
+                        //这里面的username password 相当于qq登录的用户名密码
                         .username("admin").password("abc").roles("ADMIN").build());
         return manager;
     }

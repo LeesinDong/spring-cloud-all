@@ -20,7 +20,7 @@ import java.util.concurrent.TimeUnit;
 @Configuration
 @EnableAuthorizationServer
 public class AuthorizationServerConfiguration extends AuthorizationServerConfigurerAdapter {
-
+    //构造器注入
     private final AuthenticationManager authenticationManager;
 
     private final PasswordEncoder passwordEncoder;
@@ -41,7 +41,7 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
         clients.inMemory()
                 .withClient("zsxq") // ClientId = "zsxq"
-                .secret(passwordEncoder.encode("123456"))
+                .secret(passwordEncoder.encode("123456"))//密钥
                 .authorizedGrantTypes("password")  // 授权类型密码 - "password"
                 .scopes("read", "write", "trust")
                 .accessTokenValiditySeconds((int) TimeUnit.MINUTES.toSeconds(60)); // access token 有效时间
@@ -49,8 +49,11 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
     }
 
     @Override
+    //所有认证的服务都是对外的一个 外部的服务端点
     public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
+        //保存
         endpoints.tokenStore(tokenStore())
+                //authenticationManager 在别的地方声明的
                 .authenticationManager(authenticationManager)
         ;
     }
@@ -58,6 +61,7 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
 
     @Bean
     public TokenStore tokenStore() {
+        //保存到单机
         return new InMemoryTokenStore(); // 内存型（单机） Token存储实现
     }
 
