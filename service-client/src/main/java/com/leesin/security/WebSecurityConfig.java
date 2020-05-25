@@ -14,7 +14,7 @@ import java.util.List;
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
-    private List<com.gupaoedu.service.client.web.security.IWebSecurityConfigurer> configurers;
+    private List<com.leesin.security.IWebSecurityConfigurer> configurers;
 
     @PostConstruct
     public void init() {
